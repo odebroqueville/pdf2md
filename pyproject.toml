@@ -1,0 +1,7 @@
+[project]
+name = "pdf2md"
+version = "0.1.0"
+description = "Convert PDF to Markdown using Ollama"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = ["ollama", "pillow", "pymupdf"]
