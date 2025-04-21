@@ -22,6 +22,6 @@ Where:
 
 To run the project, type the following in your Terminal:
 
-´´´
+```
 uv run main.py
-´´´
+```
