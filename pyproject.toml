@@ -1,14 +1,13 @@
 [project]
 name = "pdf2md"
-version = "0.2.0"
-description = "Convert PDF to Markdown using PaddleOCR"
+version = "0.3.0"
+description = "Convert PDF to Markdown using Gemini Flash 2.0"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "numpy",
-    "paddleocr",
-    "paddlepaddle",
+    "google-genai",
     "pillow",
+    "pdf2image",
     "pymupdf",
-    "setuptools",
+    "python-dotenv",
 ]
