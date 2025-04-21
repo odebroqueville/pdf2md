@@ -10,14 +10,22 @@ from pdf2image import convert_from_path
 from dotenv import load_dotenv
 
 # Load the environment variable for the Gemini API key
-load_dotenv()
-client = genai.Client(os.getenv("GENAI_API_KEY"))
+load_dotenv(override=True)
+
+api_key = os.getenv("GENAI_API_KEY")
+if api_key is None:
+    raise ValueError("Please set the GENAI_API_KEY environment variable.")
+client = genai.Client(api_key=api_key)
+
+# Set Obsidian Assets and Articles folders
 Obsidian_Assets_folder = os.getenv("OBSIDIAN_ASSETS_FOLDER")
 if Obsidian_Assets_folder is None:
     raise ValueError("Please set the OBSIDIAN_ASSETS_FOLDER environment variable.")
+Obsidian_Assets_folder = os.path.expanduser(Obsidian_Assets_folder)
 Obsidian_Articles_folder = os.getenv("OBSIDIAN_ARTICLES_FOLDER")
 if Obsidian_Articles_folder is None:
     raise ValueError("Please set the OBSIDIAN_ARTICLES_FOLDER environment variable.")
+Obsidian_Articles_folder = os.path.expanduser(Obsidian_Articles_folder)
 
 class PdfToImg:
     """A class to convert PDF files to images using pdf2image."""
@@ -134,12 +142,13 @@ def main():
     if images:
         print(f"Converted {len(images)} pages to images.")
         
-        prompt = """Extract all the readable text from these images and format it as structured Markdown. The images are from a PDF document. Please ensure the Markdown is well-structured and easy to read. Finally, reference the extracted images within the Markdown file using relative paths, e.g. ![](./Assets/page1_img1.jpg), where page1 and img1 are the page and image index numbers."""
+        filename = os.path.splitext(os.path.basename(pdf_path))[0]
+        
+        prompt = f"""You are a PDF document to Markdown converter. Extract all the readable text from these images and format it as structured Markdown. The images are from a PDF document and the image's page index is the same as the PDF document's page index. Please ensure the Markdown is well-structured (properly identifying titles, subtitles, lists, bold text, italics, etc.) and easy to read. Finally, reference the extracted images within the Markdown file using relative paths in the order that they appear in the PDF document: for example, the X th image (with image index X) in the PDF document on the Y th page (with page index Y) of the PDF document would have the link ![[Assets/{filename}/pageY_imgX.jpg]], where filename is the name of the file PDF document. Doublecheck that the references to the extracted images are correct. Do not add any unnecessary comments or notes. Simply convert the PDF document to Markdown and don't wrap it with ```Markdown and ```."""
         
         extracted_text = query_llm_with_images(images, prompt)
         
         # Save with the same name as the PDF but with .md extension
-        filename = os.path.splitext(os.path.basename(pdf_path))[0]
         md_path = os.path.join(Obsidian_Articles_folder, f"{filename}.md")
         # md_path = os.path.splitext(pdf_path)[0] + ".md"
         with open(md_path, "w", encoding="utf-8") as md_file:
