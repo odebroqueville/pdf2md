@@ -8,10 +8,20 @@ The main.py script is a tool for converting PDF documents into structured Markdo
 
 Your .env file must define the following 3 variables:
 
+```
 GENAI_API_KEY = "your_google_gemini_api_key"
 OBSIDIAN_ASSETS_FOLDER = "path/to/your/Obsidian/Assets"
 OBSIDIAN_ARTICLES_FOLDER = "path/to/your/Obsidian/Articles"
+```
+
+Where:
+
+- GENAI_API_KEY: The API key for accessing Google Gemini (genai).
+- OBSIDIAN_ASSETS_FOLDER: The directory where images extracted from within the PDF document will be saved.
+- OBSIDIAN_ARTICLES_FOLDER: The directory where the converted Markdown files will be saved.
 
 To run the project, type the following in your Terminal:
 
+´´´
 uv run main.py
+´´´
